@@ -6,61 +6,73 @@
 
 `sudo apt install -y playonlinux winetricks`
 
-### Create a folder
+### Clone this repository
 
-I recommend you create a dedicated folder to contain all of the files you'll need for this process.  For instance:
+It will be easiest, especially for beginners, to use a dedicated directory when running the install script.  For the purposes of illustration, I will assume you have cloned this repository in `~/halo_pc_on_linux`, and you have placed the files you will download below into the `assets` folder.  Here are the commands I recommend you use:
 
-`mkdir -p ~/halo_pc_linux`
+1. `cd`
+1. `git clone https://github.com/brainthinks/halo_pc_on_linux.git`
+1. `mkdir -p halo_pc_on_linux/assets`
 
-Will create the folder `halo_pc_linux` in your home directory.  You may create any folder you like, or not use a dedicated folder at all, but for the purposes of these instructions, I will assume that you have created that folder, and that all necessary files are placed in there.
 
 ### .NET Framework
 
 Download the .NET Framework 4.5.1 from Microsoft:
 
-[https://www.microsoft.com/en-au/download/details.aspx?id=40779](https://www.microsoft.com/en-au/download/details.aspx?id=40779)
+<a href="https://www.microsoft.com/en-au/download/details.aspx?id=40779" target="_blank">https://www.microsoft.com/en-au/download/details.aspx?id=40779</a>
 
-Move the downloaded file to `~/halo_pc_linux`
+Move the downloaded file to `~/halo_pc_on_linux/assets`
 
 
 ### Halo 1.0.10 Patch
 
 Bungie was kind enough to not only release updates and patch Halo PC to not need the CD to be inserted, but they are kind enough to STILL host these files on their website, 14+ years later!
 
-[https://www.bungie.net/en-us/Forums/Post/64943622?page=0&sort=0&showBanned=0&path=0](https://www.bungie.net/en-us/Forums/Post/64943622?page=0&sort=0&showBanned=0&path=0)
+<a href="https://www.bungie.net/en-us/Forums/Post/64943622?page=0&sort=0&showBanned=0&path=0" target="_blank">https://www.bungie.net/en-us/Forums/Post/64943622?page=0&sort=0&showBanned=0&path=0</a>
 
-The specific link you need will have the text:
+The specific links you need will have the text:
 
 `Halo PC 1.0.10`
+`Halo CE 1.0.10`
 
-But I recommend downloading all 4 files, because there's no telling how long they will actually be available.  Also, if you plan on installing SPV3, you will need the CE rather than the PC patch.
+but I recommend downloading all 4 files, because there's no telling how long they will actually be available.  Also, if you plan on installing SPV3, you will need the CE rather than the PC patch.
 
 Here are the direct links:
 
-* Halo PC 1.0.10 - [http://halo.bungie.net/images/games/halopc/patch/110/halopc-patch-1.0.10.exe](http://halo.bungie.net/images/games/halopc/patch/110/halopc-patch-1.0.10.exe)
-* Halo CE 1.0.10 - [http://halo.bungie.net/images/games/halopc/patch/110/haloce-patch-1.0.10.exe](http://halo.bungie.net/images/games/halopc/patch/110/haloce-patch-1.0.10.exe)
-* Halo PC Dedicated Server 1.0.10 - [http://halo.bungie.net/images/games/halopc/patch/110/haloded.exe](http://halo.bungie.net/images/games/halopc/patch/110/haloded.exe)
-* Halo CE Dedicated Server 1.0.10 - [http://halo.bungie.net/images/games/halopc/patch/110/haloceded.exe](http://halo.bungie.net/images/games/halopc/patch/110/haloceded.exe)
+* Halo PC 1.0.10 - <a href="http://halo.bungie.net/images/games/halopc/patch/110/halopc-patch-1.0.10.exe" target="_blank">http://halo.bungie.net/images/games/halopc/patch/110/halopc-patch-1.0.10.exe</a>
+
+* Halo CE 1.0.10 - <a href="http://halo.bungie.net/images/games/halopc/patch/110/haloce-patch-1.0.10.exe" target="_blank">http://halo.bungie.net/images/games/halopc/patch/110/haloce-patch-1.0.10.exe</a>
+
+* Halo PC Dedicated Server 1.0.10 - <a href="http://halo.bungie.net/images/games/halopc/patch/110/haloded.exe" target="_blank">http://halo.bungie.net/images/games/halopc/patch/110/haloded.exe</a>
+
+* Halo CE Dedicated Server 1.0.10 - <a href="http://halo.bungie.net/images/games/halopc/patch/110/haloceded.exe" target="_blank">http://halo.bungie.net/images/games/halopc/patch/110/haloceded.exe</a>
+
+Move the downloaded files to `~/halo_pc_on_linux/assets`
+
 
 ### Halo Custom Edition
 
-[http://hce.halomaps.org/index.cfm?fid=410](http://hce.halomaps.org/index.cfm?fid=410)
+<a href="http://hce.halomaps.org/index.cfm?fid=410" target="_blank">http://hce.halomaps.org/index.cfm?fid=410</a>
+
+Move the downloaded file to `~/halo_pc_on_linux/assets`
+
 
 ### OpenSauce
 
-[http://www.halomods.com/ips/index.php?/topic/848-opensauce-v400-release/](http://www.halomods.com/ips/index.php?/topic/848-opensauce-v400-release/)
+<a href="http://www.halomods.com/ips/index.php?/topic/848-opensauce-v400-release/" target="_blank">http://www.halomods.com/ips/index.php?/topic/848-opensauce-v400-release/</a>
 
+Move the downloaded file to `~/halo_pc_on_linux/assets`
 
 
 ## Do this stuff
 
-### Get the latest wine version
+### Get the latest wine staging version
 
 1. Ensure you have Playonlinux open
 1. Click the "Tools" menu
 1. Click "Manage Wine Versions"
 1. Ensure you are on the "Wine versions (x86)" tab - these are the 32 bit wine versions
-1. Highlight the latest version, even if it ends with the word "staging"
+1. Highlight the latest version that ends with the word "staging".  At the time I wrote this, that was `2.21-staging`.
 1. Click on the arrow in the middle that points to the right
 1. This will bring up a dialog box - click "Next"
 1. Close the "Wine Versions Manager" window
@@ -72,7 +84,7 @@ Here are the direct links:
 1. Click the "New" button at the bottom left
 1. This will bring up a dialog box - click "Next"
 1. Ensure "32 bits windows installation" is highlighted, then click "Next"
-1. Find the latest version of wine from the list, click it, then click "Next"
+1. Find the latest version of wine staging from the list, click it, then click "Next"
 1. Type a name for this virtual drive - I used "halo_pc", then click "Next"
 1. The virtual drive will now go through the setup steps.  You may be prompted a few times to take an action.  Anytime you are prompted, choose the affirmative option.  Here are a few examples:
     * "Wine Mono Installer" - click "Install"
@@ -86,25 +98,35 @@ Here are the direct links:
 1. Click "Configure Wine"
 1. This will open a "Wine configuration" window that looks like a Windows configuration window
     1. From the "Applications" tab, ensure the "Windows Version" is set to "Windows 7"
+    1. From the "Libraries" tab:
+        1. Type "dinput8" into the "New override for library" dropdown
+        1. Click the "Add" button
+    1. From the "Staging" tab:
+        1. Check "Enable CMST for better graphic performance"
+    1. Click OK
+
+### Run the interactive Installer
+
+1. Ensure you have Playonlinux open, and you have selected the "halo_pc" virtual drive from the "Configuration" window
+1. Click the "Miscellaneous" tab
+1. Click "Open a shell" - This will open a terminal that is configured to use the wine version that is being managed in your "halo_pc" virtual drive
+1. From this shell/terminal:
+    1. `cd ~/halo_pc_on_linux`
+    1. `./install.sh`
+
+### Configure the virtual desktop
+
+1. Ensure you have Playonlinux open, and you have selected the "halo_pc" virtual drive from the "Configuration" window
+1. Click the "Wine" tab
+1. Click "Configure Wine"
+1. This will open a "Wine configuration" window that looks like a Windows configuration window
     1. From the "Graphics" tab:
         1. Check "Automatically capture the mouse in full-screen windows"
         1. Uncheck "Allow the window manager to decorate windows"
         1. Uncheck "Allow the window manager to control the windows"
         1. Check "Emulate a virtual desktop"
         1. Set the "Desktop size" to 1920 x 1080 (or another resolution if you prefer)
-    1. From the "Libraries" tab:
-        1. Type "dinput8" into the "New override for library" dropdown
-        1. Click the "Add" button
     1. Click OK
-
-### Run the interactive Installer
-
-1. `cd ~/halo_pc_linux`
-1. `./install.sh`
-1. Read the instructions and follow the prompts
-1.
-
-
 
 
 
