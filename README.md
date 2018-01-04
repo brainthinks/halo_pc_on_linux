@@ -19,7 +19,7 @@ It will be easiest, especially for beginners, to use a dedicated directory when 
 
 Download the .NET Framework 4.5.1 from Microsoft:
 
-<a href="https://www.microsoft.com/en-au/download/details.aspx?id=40779" target="_blank">https://www.microsoft.com/en-au/download/details.aspx?id=40779</a>
+["https://www.microsoft.com/en-au/download/details.aspx?id=40779"](https://www.microsoft.com/en-au/download/details.aspx?id=40779)
 
 Move the downloaded file to `~/halo_pc_on_linux/assets`
 
@@ -28,7 +28,7 @@ Move the downloaded file to `~/halo_pc_on_linux/assets`
 
 Bungie was kind enough to not only release updates and patch Halo PC to not need the CD to be inserted, but they are kind enough to STILL host these files on their website, 14+ years later!
 
-<a href="https://www.bungie.net/en-us/Forums/Post/64943622?page=0&sort=0&showBanned=0&path=0" target="_blank">https://www.bungie.net/en-us/Forums/Post/64943622?page=0&sort=0&showBanned=0&path=0</a>
+["https://www.bungie.net/en-us/Forums/Post/64943622?page=0&sort=0&showBanned=0&path=0"](https://www.bungie.net/en-us/Forums/Post/64943622?page=0&sort=0&showBanned=0&path=0)
 
 The specific links you need will have the text:
 
@@ -39,27 +39,27 @@ but I recommend downloading all 4 files, because there's no telling how long the
 
 Here are the direct links:
 
-* Halo PC 1.0.10 - <a href="http://halo.bungie.net/images/games/halopc/patch/110/halopc-patch-1.0.10.exe" target="_blank">http://halo.bungie.net/images/games/halopc/patch/110/halopc-patch-1.0.10.exe</a>
+* Halo PC 1.0.10 - ["http://halo.bungie.net/images/games/halopc/patch/110/halopc-patch-1.0.10.exe"](http://halo.bungie.net/images/games/halopc/patch/110/halopc-patch-1.0.10.exe)
 
-* Halo CE 1.0.10 - <a href="http://halo.bungie.net/images/games/halopc/patch/110/haloce-patch-1.0.10.exe" target="_blank">http://halo.bungie.net/images/games/halopc/patch/110/haloce-patch-1.0.10.exe</a>
+* Halo CE 1.0.10 - ["http://halo.bungie.net/images/games/halopc/patch/110/haloce-patch-1.0.10.exe"](http://halo.bungie.net/images/games/halopc/patch/110/haloce-patch-1.0.10.exe)
 
-* Halo PC Dedicated Server 1.0.10 - <a href="http://halo.bungie.net/images/games/halopc/patch/110/haloded.exe" target="_blank">http://halo.bungie.net/images/games/halopc/patch/110/haloded.exe</a>
+* Halo PC Dedicated Server 1.0.10 - ["http://halo.bungie.net/images/games/halopc/patch/110/haloded.exe"](http://halo.bungie.net/images/games/halopc/patch/110/haloded.exe)
 
-* Halo CE Dedicated Server 1.0.10 - <a href="http://halo.bungie.net/images/games/halopc/patch/110/haloceded.exe" target="_blank">http://halo.bungie.net/images/games/halopc/patch/110/haloceded.exe</a>
+* Halo CE Dedicated Server 1.0.10 - ["http://halo.bungie.net/images/games/halopc/patch/110/haloceded.exe"](http://halo.bungie.net/images/games/halopc/patch/110/haloceded.exe)
 
 Move the downloaded files to `~/halo_pc_on_linux/assets`
 
 
 ### Halo Custom Edition
 
-<a href="http://hce.halomaps.org/index.cfm?fid=410" target="_blank">http://hce.halomaps.org/index.cfm?fid=410</a>
+["http://hce.halomaps.org/index.cfm?fid=410"](http://hce.halomaps.org/index.cfm?fid=410)
 
 Move the downloaded file to `~/halo_pc_on_linux/assets`
 
 
 ### OpenSauce
 
-<a href="http://www.halomods.com/ips/index.php?/topic/848-opensauce-v400-release/" target="_blank">http://www.halomods.com/ips/index.php?/topic/848-opensauce-v400-release/</a>
+["http://www.halomods.com/ips/index.php?/topic/848-opensauce-v400-release/"](http://www.halomods.com/ips/index.php?/topic/848-opensauce-v400-release/)
 
 Move the downloaded file to `~/halo_pc_on_linux/assets`
 
