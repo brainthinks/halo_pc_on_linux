@@ -1,2 +1,8 @@
+# This is where you put your downloaded files
 assets/
-sikuli/**/*.html
+
+# This is the configuration file you need to create
+config.sh
+
+# Winetricks may be created here, so we don't want to track it
+winetricks
