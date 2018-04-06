@@ -9,7 +9,6 @@
 # configure wine? desktop, cmst, etc
 # create shortcuts
 
-
 ###
 ### Helpers
 ###
@@ -110,6 +109,9 @@ function installDependencies () {
   # SPV3 claims to require dotnet 4.5.1
   $WINETRICKS win7
   wine "$DOTNET_451_PATH" /q /norestart
+
+  # Needed for keygen
+  # $WINETRICKS vb6run
 }
 
 # Install Halo CE, the patch, and opensauce
@@ -153,21 +155,13 @@ function installHaloPC () {
 }
 
 function convertMaps () {
-  local maps=(\
-    "a10" \
-    "a30" \
-    "a50" \
-    "b30" \
-    "b40" \
-    "c10" \
-    "c20" \
-    "c40" \
-    "d20" \
-    "d40" \
-  )
+  git clone "https://github.com/brainthinks/python_combustion.git"
 
-  # figure out how to use combustion r library
-  echo "@todo "
+  cd "python_combustion"
+
+  "./examples/convert_all_retail_maps.sh" "$C_DRIVE_PATH"
+
+  cd ".."
 }
 
 function installRynoUI () {
@@ -326,15 +320,15 @@ function mainMenu () {
   do
     case $option in
       "Install Dependencies")
-        installDependencies
+        _installDependencies
         mainMenu
         ;;
       "Install Halo CE")
-        installHaloCustomEdition
+        _installHaloCustomEdition
         mainMenu
         ;;
       "Install Halo PC")
-        installHaloPC
+        _installHaloPC
         mainMenu
         ;;
       "Install Halo CE Single Player")
