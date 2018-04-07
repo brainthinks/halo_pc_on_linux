@@ -246,7 +246,7 @@ stable way to play the game.
 * [https://ubuntuforums.org/showthread.php?t=655352](https://ubuntuforums.org/showthread.php?t=655352)
 * [https://www.reddit.com/r/halospv3/comments/545mhs/spv302_released_download_for_all_users_inside/](https://www.reddit.com/r/halospv3/comments/545mhs/spv302_released_download_for_all_users_inside/)
 * [https://www.youtube.com/watch?v=J0ANLxDdf_U](https://www.youtube.com/watch?v=J0ANLxDdf_U)
-
+* [http://forum.halomaps.org/index.cfm?page=topic&topicID=50277](http://forum.halomaps.org/index.cfm?page=topic&topicID=50277)
 
 ## @TODO
 

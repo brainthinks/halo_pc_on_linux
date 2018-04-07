@@ -76,7 +76,7 @@ function cleanStart () {
   mkdir -p "$TMP_DIR"
 
   # Ensure we always start from the same directory
-  cd "$STARTING_PATH"
+  cd "$PROJECT_DIR"
 }
 
 
@@ -132,6 +132,75 @@ function installHaloCustomEdition () {
   msiexec /i "$OPENSAUCE_PATH"
 }
 
+function backupHaloCEMaps () {
+  mv "$PATH_TO_CE_MAPS" "$PATH_TO_CE_MAPS_BACKUP"
+}
+
+function installSPV3 () {
+  cd "$TMP_DIR"
+  file-roller -h "$SPV3_PATH"
+
+  cd "$TMP_DIR/SPV3.1.0f"
+
+  file-roller -h ./*.yumi
+
+  cp -R "$PATH_TO_CE_MAPS_BACKUP" "$PATH_TO_CE_MAPS_SPV3"
+
+  mkdir -p "$PATH_TO_CE_MAPS_SPV3/data_files"
+
+  mv "$TMP_DIR/SPV3.1.0f/-bitmaps.map" "$PATH_TO_CE_MAPS_SPV3/data_files/spv3bitmaps.map"
+  mv "$TMP_DIR/SPV3.1.0f/-loc.map" "$PATH_TO_CE_MAPS_SPV3/data_files/spv3loc.map"
+  mv "$TMP_DIR/SPV3.1.0f/-sounds.map" "$PATH_TO_CE_MAPS_SPV3/data_files/spv3sounds.map"
+
+  mv "$TMP_DIR/SPV3.1.0f/*.yelo" "$PATH_TO_CE_MAPS_SPV3"
+  mv "$TMP_DIR/SPV3.1.0f/*.map" "$PATH_TO_CE_MAPS_SPV3"
+
+  # Even though these are only needed for SPV3, it doesn't hurt anything to keep
+  # them permanently in the Halo CE directory.
+  mv "$TMP_DIR/SPV3.1.0f/core.yumi_FILES/ICON.ICO" "$PATH_TO_CE_MAPS_SPV3/.."
+  mv "$TMP_DIR/SPV3.1.0f/core.yumi_FILES/SPV3.EXE" "$PATH_TO_CE_MAPS_SPV3/.."
+
+  cd "$PROJECT_DIR"
+
+  rm -rf "$TMP_DIR/SPV3.1.0f"
+}
+
+function installRynoUI () {
+  cp "$RYNO_UI_PATH" "$TMP_DIR"
+  cd "$TMP_DIR"
+  unzip *.zip
+
+  rm "$1/ui.map"
+  mv "ui.map" "$1"
+}
+
+function installMosRefinedCampaign () {
+  cp -R "$PATH_TO_CE_MAPS_BACKUP" "$PATH_TO_CE_MAPS_MRC"
+
+  installRynoUI "$PATH_TO_CE_MAPS_MRC"
+
+  cd "$TMP_DIR"
+  file-roller -h "$MRC_PATH"
+
+  cd "$TMP_DIR/halo ce fixed sp campaign"
+
+  file-roller -h ./*.zip
+
+  # @see - https://stackoverflow.com/a/9449633
+  IFS=$'\n'
+  declare -a maps=($(find ./ -name *.map))
+  unset IFS
+
+  # @see - https://stackoverflow.com/a/8880633
+  for map in "${maps[@]}"
+  do
+    mv "$map" "$PATH_TO_CE_MAPS_MRC"
+  done
+
+  cd "$PROJECT_DIR"
+  rm -rf "$TMP_DIR/halo ce fixed sp campaign"
+}
+
 # Install Halo PC from an ISO file, then install the patch
 #
 # @todo - perform fileExists checks for necessary files
@@ -154,25 +223,19 @@ function installHaloPC () {
   read -p ""
 }
 
-function convertMaps () {
+function installHaloCEHaloPCCampaign () {
+  cp -R "$PATH_TO_CE_MAPS_BACKUP" "$PATH_TO_CE_MAPS_PCC"
+
+  installRynoUI "$PATH_TO_CE_MAPS_PCC"
+
   git clone "https://github.com/brainthinks/python_combustion.git"
 
   cd "python_combustion"
 
-  "./examples/convert_all_retail_maps.sh" "$C_DRIVE_PATH"
+  # @todo - need to specify the target path!
+  "./examples/convert_all_retail_maps.sh" "$PATH_TO_C_DRIVE"
 
-  cd ".."
-}
-
-function installRynoUI () {
-  local pathToMaps="$WINEPREFIX/drive_c/Program Files/Microsoft Games/Halo Custom Edition/maps"
-
-  cp "$RYNO_UI_PATH" "$TMP_DIR"
-  cd "$TMP_DIR"
-  unzip *.zip
-
-  rm "$pathToMaps/ui.map"
-  cp "ui.map" "$pathToMaps"
+  cd "$PROJECT_DIR"
 }
 
 
@@ -307,11 +370,14 @@ function mainMenu () {
   echo ""
 
   local options=(\
-    "Install Dependencies" \
-    "Install Halo CE" \
-    "Install SPV3" \
-    "Install Halo PC" \
-    "Install Halo CE Single Player" \
+    "Step 1 - Install Dependencies" \
+    "Step 2 - Install Halo CE" \
+    "Step 3 - Backup Halo CE maps" \
+    "Step 4 - Install SPV3" \
+    "Step 5 - Install Halo CE Mo's Refined Campaign" \
+    "Step 6 - Install Halo PC" \
+    "Step 7 - Install Halo CE Campaign from Halo PC" \
+    "Step 8 - Open Halo CE Campaign Manager" \
     "Exit" \
   )
 
@@ -319,26 +385,36 @@ function mainMenu () {
 
   do
     case $option in
-      "Install Dependencies")
+      "Step 1 - Install Dependencies")
         _installDependencies
         mainMenu
         ;;
-      "Install Halo CE")
+      "Step 2 - Install Halo CE")
         _installHaloCustomEdition
         mainMenu
         ;;
-      "Install Halo PC")
+      "Step 3 - Backup Halo CE maps")
+        backupHaloCEMaps
+        mainMenu
+        ;;
+      "Step 4 - Install SPV3")
+        installSPV3
+        mainMenu
+        ;;
+      "Step 5 - Install Halo CE Mo's Refined Campaign")
+        installMosRefinedCampaign
+        mainMenu
+        ;;
+      "Step 6 - Install Halo PC")
         _installHaloPC
         mainMenu
         ;;
-      "Install Halo CE Single Player")
-        convertMaps
-        installRynoUI
+      "Step 7 - Install Halo CE Campaign from Halo PC")
+        installHaloCEHaloPCCampaign
         mainMenu
         ;;
-      "Install SPV3")
-        installSPV3
-        mainMenu
+      "Step 8 - Open Halo CE Campaign Manager"
+        ./manager.sh
         ;;
 
       "Exit")
@@ -361,9 +437,6 @@ function mainMenu () {
 
 # Pull in the necessary configurations
 source "./config.sh"
-
-# Ensure we have access to the directory in which we started
-STARTING_PATH=$(pwd)
 
 # Winetricks may already exist, so find it or download it
 detectWinetricks
