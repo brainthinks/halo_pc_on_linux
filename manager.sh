@@ -1,23 +1,51 @@
 #!/usr/bin/env bash
 
 function enableSPV3 () {
+  backupProfile
   rm -rf "$PATH_TO_CE_MAPS"
   cp -R "$PATH_TO_CE_MAPS_SPV3" "PATH_TO_CE_MAPS"
+  mv "$PATH_TO_PROFILE_SPV3" "$PATH_TO_PROFILE_CE"
 }
 
 function enableMRC () {
+  backupProfile
   rm -rf "$PATH_TO_CE_MAPS"
   cp -R "$PATH_TO_CE_MAPS_MRC" "PATH_TO_CE_MAPS"
+  mv "$PATH_TO_PROFILE_MRC" "$PATH_TO_PROFILE_CE"
 }
 
 function enablePCC () {
+  backupProfile
   rm -rf "$PATH_TO_CE_MAPS"
   cp -R "$PATH_TO_CE_MAPS_PCC" "PATH_TO_CE_MAPS"
+  mv "$PATH_TO_PROFILE_PCC" "$PATH_TO_PROFILE_CE"
 }
 
 function restoreCE () {
+  backupProfile
   rm -rf "$PATH_TO_CE_MAPS"
   cp -R "$PATH_TO_CE_MAPS_BACKUP" "PATH_TO_CE_MAPS"
+  mv "$PATH_TO_PROFILE_CE_BACKUP" "$PATH_TO_PROFILE_CE"
+}
+
+# @todo - instead of doing this, I could just see which folder is missing...
+backupProfile () {
+  if [[ -f "$PATH_TO_SPV3_ID" ]]; then
+    mv "$PATH_TO_PROFILE_CE" "$PATH_TO_PROFILE_SPV3"
+    return
+  fi
+
+  if [[ -f "$PATH_TO_MRC_ID" ]]; then
+    mv "$PATH_TO_PROFILE_CE" "$PATH_TO_PROFILE_MRC"
+    return
+  fi
+
+  if [[ -f "$PATH_TO_PCC_ID" ]]; then
+    mv "$PATH_TO_PROFILE_CE" "$PATH_TO_PROFILE_PCC"
+    return
+  fi
+
+  mv "$PATH_TO_PROFILE_CE" "$PATH_TO_PROFILE_CE_BACKUP"
 }
 
 
