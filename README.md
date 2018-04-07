@@ -2,14 +2,9 @@
 
 ## Prerequisites
 
-### Install Playonlinux
+### Install Playonlinux and Git
 
-`sudo apt install -y playonlinux`
-
-
-### Install dependencies for Halo CE Single Player
-
-`sudo apt install -y git`
+`sudo apt install -y playonlinux git`
 
 
 ### Clone this repository
@@ -78,13 +73,13 @@ Move the downloaded file to `~/halo_pc_on_linux/assets`
 
 ## Configure Playonlinux and Wine
 
-### Get the latest wine staging version
+### Get the latest wine 3.x version
 
 1. Ensure you have Playonlinux open
 1. Click the "Tools" menu
 1. Click "Manage Wine Versions"
 1. Ensure you are on the "Wine versions (x86)" tab - these are the 32 bit wine versions
-1. Highlight the latest version that ends with the word "staging".  At the time I wrote this, that was `2.21-staging`.
+1. Highlight the latest 3.x version.  At the time I wrote this, that was `3.5`.
 1. Click on the arrow in the middle that points to the right
 1. This will bring up a dialog box - click "Next"
 1. Once the download completes, close the "Wine Versions Manager" window
@@ -96,7 +91,7 @@ Move the downloaded file to `~/halo_pc_on_linux/assets`
 1. Click the "New" button at the bottom left
 1. This will bring up a dialog box - click "Next"
 1. Ensure "32 bits windows installation" is highlighted, then click "Next"
-1. Find the latest version of wine staging from the list (which is probably all the way at the bottom), click it, then click "Next"
+1. Find the latest version of wine 3.x (such as `3.5`) from the list (which is probably all the way at the bottom), click it, then click "Next"
 1. Type a name for this virtual drive - I used "halo_pc", then click "Next"
 1. The virtual drive will now go through the setup steps.  You may be prompted a few times to take an action.  Anytime you are prompted, choose the affirmative option.  Here are a few examples:
     * "Wine Mono Installer" - click "Install"
@@ -114,8 +109,6 @@ Move the downloaded file to `~/halo_pc_on_linux/assets`
     1. From the "Libraries" tab:
         1. Type "dinput8" into the "New override for library" dropdown
         1. Click the "Add" button
-    1. From the "Staging" tab:
-        1. Check "Enable CMST for better graphic performance"
     1. Click OK
 
 
@@ -250,6 +243,8 @@ stable way to play the game.
 
 ## @TODO
 
+* modify Halo_Settings.User.xml
+* modify Chimera_Settings.User.xml
 * use recurring prompts after the different installations finish
 * add the maw fixed(?)
-* Install SPV3!
+* Use bash infinity?

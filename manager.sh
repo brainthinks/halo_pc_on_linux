@@ -1,53 +1,61 @@
 #!/usr/bin/env bash
 
 function enableSPV3 () {
-  backupProfile
-  rm -rf "$PATH_TO_CE_MAPS"
-  cp -R "$PATH_TO_CE_MAPS_SPV3" "PATH_TO_CE_MAPS"
+  backupProfileAndMaps
+  print_info "Enabling SPV3"
+  mv "$PATH_TO_CE_MAPS_SPV3" "$PATH_TO_CE_MAPS"
   mv "$PATH_TO_PROFILE_SPV3" "$PATH_TO_PROFILE_CE"
 }
 
 function enableMRC () {
-  backupProfile
-  rm -rf "$PATH_TO_CE_MAPS"
-  cp -R "$PATH_TO_CE_MAPS_MRC" "PATH_TO_CE_MAPS"
+  backupProfileAndMaps
+  print_info "Enabling Mo's Refined Campaign"
+  mv "$PATH_TO_CE_MAPS_MRC" "$PATH_TO_CE_MAPS"
   mv "$PATH_TO_PROFILE_MRC" "$PATH_TO_PROFILE_CE"
 }
 
 function enablePCC () {
-  backupProfile
-  rm -rf "$PATH_TO_CE_MAPS"
-  cp -R "$PATH_TO_CE_MAPS_PCC" "PATH_TO_CE_MAPS"
+  backupProfileAndMaps
+  print_info "Enabling Halo PC Campaign for Halo CE"
+  mv "$PATH_TO_CE_MAPS_PCC" "$PATH_TO_CE_MAPS"
   mv "$PATH_TO_PROFILE_PCC" "$PATH_TO_PROFILE_CE"
 }
 
 function restoreCE () {
-  backupProfile
-  rm -rf "$PATH_TO_CE_MAPS"
-  cp -R "$PATH_TO_CE_MAPS_BACKUP" "PATH_TO_CE_MAPS"
+  backupProfileAndMaps
+  print_info "Enabling stock Halo CE"
+  mv "$PATH_TO_CE_MAPS_BACKUP" "$PATH_TO_CE_MAPS"
   mv "$PATH_TO_PROFILE_CE_BACKUP" "$PATH_TO_PROFILE_CE"
 }
 
 # @todo - instead of doing this, I could just see which folder is missing...
-backupProfile () {
-  if [[ -f "$PATH_TO_SPV3_ID" ]]; then
+backupProfileAndMaps () {
+  if [[ -f "$PATH_TO_CE_MAPS/$PATH_TO_SPV3_ID" ]]; then
+    print_info "Backing up SPV3"
+    ls "$PATH_TO_PROFILE_CE"
     mv "$PATH_TO_PROFILE_CE" "$PATH_TO_PROFILE_SPV3"
+    mv "$PATH_TO_CE_MAPS" "$PATH_TO_CE_MAPS_SPV3"
     return
   fi
 
-  if [[ -f "$PATH_TO_MRC_ID" ]]; then
+  if [[ -f "$PATH_TO_CE_MAPS/$PATH_TO_MRC_ID" ]]; then
+    print_info "Backing up Mo's Refined Campaign"
     mv "$PATH_TO_PROFILE_CE" "$PATH_TO_PROFILE_MRC"
+    mv "$PATH_TO_CE_MAPS" "$PATH_TO_CE_MAPS_MRC"
     return
   fi
 
-  if [[ -f "$PATH_TO_PCC_ID" ]]; then
+  if [[ -f "$PATH_TO_CE_MAPS/$PATH_TO_PCC_ID" ]]; then
+    print_info "Backing up Halo PC Campaign for Halo CE"
     mv "$PATH_TO_PROFILE_CE" "$PATH_TO_PROFILE_PCC"
+    mv "$PATH_TO_CE_MAPS" "$PATH_TO_CE_MAPS_PCC"
     return
   fi
 
+  print_info "Backing up stock Halo CE"
   mv "$PATH_TO_PROFILE_CE" "$PATH_TO_PROFILE_CE_BACKUP"
+  mv "$PATH_TO_CE_MAPS" "$PATH_TO_CE_MAPS_BACKUP"
 }
-
 
 function cleanStart () {
   # Confirm this script was run in a playonlinux terminal
@@ -64,6 +72,7 @@ function cleanStart () {
 function mainMenu () {
   cleanStart
 
+  echo -e "${ORANGE}"
   echo ""
   echo "-------------------------------------------------------------------------"
   echo "---                                                                   ---"
@@ -81,6 +90,7 @@ function mainMenu () {
   echo "---                                                                   ---"
   echo "-------------------------------------------------------------------------"
   echo ""
+  echo -e "${NC}"
 
   local options=(\
     "Enable SPV3" \
@@ -129,7 +139,7 @@ function mainMenu () {
 ### Procedure
 ###
 
-# Pull in the necessary configurations
+source "./utils.sh"
 source "./config.sh"
 
 # Display the main menu
