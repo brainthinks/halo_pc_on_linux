@@ -1,6 +1,6 @@
 # Halo PC on Ubuntu/Linux Mint
 
-Note that this is still experimental!
+This was tested on Linux Mint 18 / Ubuntu 16.04
 
 ## Prerequisites
 
@@ -161,92 +161,50 @@ Move the downloaded file to `~/halo_pc_on_linux/assets`, and rename it `mrc.zip`
 1. Choose the second option to install the rest of the dependencies by typing "2" then pressing enter
 
 
-## Scripts
-
-### `./installer.sh`
+## Install Halo
 
 Once you have followed the above steps, you will have downloaded all of the necessary files, created the virtual drive, and installed the necessary dependencies.  Now it's time to install Halo!  There are a few choices, but you will likely at least want to install Halo CE.  Once you have installed what you want, you can open the Halo manager script.
 
-All of the installation options are listed below.  Note that you will need to run `./installer.sh` and `./manager.sh` from a playonlinux shell for your virtual drive.  Here are the steps to get one of those shells open:
+Note that you must install Halo CE prior to installing everything else, except Halo PC.
+
+Also note that you must install both Halo CE and Halo PC before installing the Halo PC Campaign for Halo CE.
 
 1. Ensure you have Playonlinux open, and you have selected the "halo_pc" virtual drive from the "Configuration" window
 1. Click the "Miscellaneous" tab
 1. Click "Open a shell" - This will open a terminal that is configured to use the wine version that is being managed in your "halo_pc" virtual drive
 1. From this shell/terminal:
     1. `cd ~/halo_pc_on_linux`
-    1. `./installer.sh` or, if you've already installed everything, `./manager.sh`
+    1. `./installer.sh`
+    1. Install the games you want
 
 
-### `./manager.sh`
+## Configure SPV3
 
-After you've installed the Halo versions you want, you will have more than one Halo CE-based game.  The `./manager` script allows you to switch between the different installations while keeping the profiles, settings, and saved games separate.
-
-@todo - document the manager options
-
-
-## Shortcuts
-
-Now that you've installed the games you want to play, it's time to create the shortcuts to the game so you can actually play it.
-
-
-### Create Shortcuts
-
-1. Ensure you have Playonlinux open, and you are on the "Configuration" window that lists all of your virtual drives
-1. Find your "halo_pc" virtual drive from the list on the left, then click it
-1. Click the "General" tab
-1. Click the "Make a new shortcut from this virtual drive" button
-1. Scroll down to find and select "haloce.exe" (do not use the .lnk file)
-1. Click "Next"
-1. Give the shortcut a name, such as "Halo CE", then click "Next"
-1. Scroll down to find and select "SPV3.EXE"
-1. Click "Next"
-1. Give the shortcut a name, such as "SPV3", then click "Next"
-1. Scroll down to find and select "halo.exe"
-1. Click "Next"
-1. Give the shortcut a name, such as "Halo PC", then click "Next"
-1. Choose "I don't want to make another shortcut"
-1. Click "Next"
-
-
-### Configure Shortcuts
-
-Note that you aren't necessarily required to run the game in fullscreen 1920x1080, but I have found it to be the most
-stable way to play the game.
-
-1. Ensure you have Playonlinux open, and you are on the "Configuration" window that lists all of your virtual drives
-1. Find your "halo_pc" virtual drive from the list on the left, then click it
-1. Find the shortcut you made for Halo CE, then click it
-1. In the "Arguments" text box, put the following after anything that might already be in there.  Note that it starts with a space:
-    1. `-vidmode 1920,1080,60 -console`
-1. Repeat this for the Halo PC shortcut
-
-
-### Configure SPV3
-
-SPV3 has more rigid requirements for working properly, due to its custom launcher.  Because of this, we cannot set the vidmode and other settings, like we do with the Halo CE and Halo PC shortcuts.
+SPV3 has more rigid requirements for working properly, due to its custom launcher.  Because of this, we cannot set the vidmode and other settings, like we do with the Halo CE and Halo PC shortcuts.  You will only have to do the following steps once.
 
 1. Ensure you have installed SPV3
-1. Ensure you have created a shortcut for SPV3
-1. Ensure you have enabled SPV3 from the manager
-1. Launch Halo CE from the shortcut
+1. Launch the `SPV3 (no launcher)` shortcut
 1. Create a profile by clicking on "Settings", typing a name, and clicking "OK" to save it
 1. Quit Halo CE
-1. Launch SPV3 from the shortcut
+1. Launch the `SPV3` shortcut
 1. Click on the red text at the bottom that will allow you to enter a profile name
 1. Enter your profile name
 1. Click "Step 03: Save Profile"
 1. The launcher will close
-1. Launch SPV3 from the shortcut
-1. This time, you'll see the real menu
+1. Launch the `SPV3` shortcut - this time, you'll see the real menu, but don't click on anything
 1. Open `~/My Games/Halo CE/Halo_Settings.User.xml` in a text editor
+    1. `nano ~/My Games/Halo CE/Halo_Settings.User.xml`
 1. Under `<Video>`, you'll see <Enabled>false</Enabled>` - change that `false` to `true`
 1. Under `<Developer>`, you'll see <Enabled>false</Enabled>` - change that `false` to `true` if you want access to the console
 1. Save and close the file
+    1. If you're using nano, ctrl+x then enter will save and exit
 1. Open `~/My Games/Halo CE/Chimera_Settings.User.xml` in a text editor
+    1. `nano ~/My Games/Halo CE/Chimera_Settings.User.xml`
 1. Under `<Cinematic>`, you'll see <Enabled>false</Enabled>` - change that `false` to `true`
 1. Save and close the file
+    1. If you're using nano, ctrl+x then enter will save and exit
 1. Go back to the SPV3 launcher that you still have open
-1. Click "Launch SPV3"
+1. Click "Launch SPV3" to play the game!
 
 
 ## References
@@ -274,10 +232,12 @@ SPV3 has more rigid requirements for working properly, due to its custom launche
 * [https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
 * [https://askubuntu.com/questions/370737/p11-kit-typical-problem-with-wine](https://askubuntu.com/questions/370737/p11-kit-typical-problem-with-wine)
 * [https://www.playonlinux.com/en/topic-10534-Regarding_ptrace_scope_fatal_error.html](https://www.playonlinux.com/en/topic-10534-Regarding_ptrace_scope_fatal_error.html)
-
+* [https://www.playonlinux.com/en/documentation.html](https://www.playonlinux.com/en/documentation.html)
 
 ## @TODO
 
+* now that I know about playonlinux-bash, what else can be automated?
+* automate the downloads of the necessary files
 * learn how to configure chimera
 * make the screen size configurable
 * add the maw fixed(?)

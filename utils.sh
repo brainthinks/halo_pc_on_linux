@@ -31,7 +31,21 @@ function print_failure () {
   echo -e "${RED}$1${NC}"
 }
 
-function error_check () {
+function error_check_return () {
+  local error_code=$?
+  local successMessage="$1"
+  local failureMessage="$2"
+
+  if [ "$error_code" != "0" ]; then
+    print_failure "$failureMessage"
+    return "$error_code"
+  fi
+
+  print_success "$successMessage"
+}
+
+
+function error_check_exit () {
   local error_code=$?
   local successMessage="$1"
   local failureMessage="$2"
