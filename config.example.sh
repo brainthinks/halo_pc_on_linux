@@ -24,7 +24,6 @@ SERIAL=""
 
 # Dependencies
 DOTNET_451_FILE="NDP451-KB2858728-x86-x64-AllOS-ENU.exe"
-VC_FILE="vc_redist.x64.exe"
 
 # Halo PC
 HALO_ISO_FILE="HALO.ISO"
@@ -55,6 +54,9 @@ RYNO_UI_FILE="RynO_UI.zip"
 
 # So we can get back to home
 PROJECT_DIR=$(pwd)
+
+# A special wine version is required to install .net dependencies
+DOTNET_WINE_VERSION="wine-1.9.19 (Staging)"
 
 # The place where you put all the downloaded files.  If you followed
 # the guide from the README, you won't need to change this.
@@ -91,7 +93,6 @@ PATH_TO_PCC_ID=".pcc"
 
 # Dependencies
 DOTNET_451_PATH="$ASSETS_DIR/$DOTNET_451_FILE"
-VC_PATH="$ASSETS_DIR/$VC_FILE"
 
 # Halo PC
 HALO_ISO_MOUNT_DIR="$TMP_DIR/HALO"

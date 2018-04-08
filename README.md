@@ -1,19 +1,33 @@
 # Halo PC on Ubuntu/Linux Mint
 
+Note that this is still experimental!
+
 ## Prerequisites
 
-### Install Playonlinux and Git
+### Install System Dependencies
 
-`sudo apt install -y playonlinux git`
+```bash
+sudo apt install -y \
+    playonlinux \
+    git \
+    p11-kit-modules:i386
+```
 
 
 ### Clone this repository
 
 It will be easiest, especially for beginners, to use a dedicated directory when running the install script.  For the purposes of illustration, I will assume you have cloned this repository in `~/halo_pc_on_linux`, and you have placed the files you will download below into the `assets` folder.  Here are the commands I recommend you use:
 
-1. `cd`
-1. `git clone https://github.com/brainthinks/halo_pc_on_linux.git`
-1. `mkdir -p halo_pc_on_linux/assets`
+```bash
+# This will take you to your home folder aka ~
+cd
+
+# This will clone this repository, which means the source code will be downloaded to your computer
+git clone "https://github.com/brainthinks/halo_pc_on_linux.git"
+
+# This will create a folder that we'll be putting some files in
+mkdir -p "halo_pc_on_linux/assets"
+```
 
 
 ### .NET Framework
@@ -62,6 +76,15 @@ Move the downloaded file to `~/halo_pc_on_linux/assets`
 Move the downloaded file to `~/halo_pc_on_linux/assets`
 
 
+### SPV3
+
+Follow the official download instructions - [https://www.reddit.com/r/halospv3/comments/6umz3f/spv31_released_all_new_install_method_11_missions/](https://www.reddit.com/r/halospv3/comments/6umz3f/spv31_released_all_new_install_method_11_missions/)
+
+Direct Link - [http://www.mediafire.com/file/jy6nfbnrwnqhtb9/SPV3.1.0f.zip](http://www.mediafire.com/file/jy6nfbnrwnqhtb9/SPV3.1.0f.zip)
+
+Move the downloaded file to `~/halo_pc_on_linux/assets`
+
+
 ### Ryno UI
 
 If you plan on playing the single player campaign in Halo CE (which is the way I recommend playing it), you will need a `ui.map` file that allows you to play the campaign.  Ryno UI is the closest I found to stock.  You are free to use your own `ui.map` file, but this guide assumes you are using this one.
@@ -71,18 +94,32 @@ If you plan on playing the single player campaign in Halo CE (which is the way I
 Move the downloaded file to `~/halo_pc_on_linux/assets`
 
 
+### Mo's Refined Campaign
+
+Here is the original thread: [http://forum.halomaps.org/index.cfm?page=topic&topicID=50277](http://forum.halomaps.org/index.cfm?page=topic&topicID=50277)
+
+Click the download link at the top of the first post, which will take you to a google drive folder.  From here, click the dropdown icon at the end of the "Shared with me > halo ce fixed sp campaign".  Choose the "Download" option.  This will prompt you to download a big zip file.
+
+Move the downloaded file to `~/halo_pc_on_linux/assets`, and rename it `mrc.zip`
+
+
 ## Configure Playonlinux and Wine
 
-### Get the latest wine 3.x version
+### Get the necessary wine versions
 
 1. Ensure you have Playonlinux open
 1. Click the "Tools" menu
 1. Click "Manage Wine Versions"
 1. Ensure you are on the "Wine versions (x86)" tab - these are the 32 bit wine versions
-1. Highlight the latest 3.x version.  At the time I wrote this, that was `3.5`.
+1. Highlight the latest 3.x version.  At the time I wrote this, that was `3.5`.  This is the wine version that halo will run in.
 1. Click on the arrow in the middle that points to the right
 1. This will bring up a dialog box - click "Next"
-1. Once the download completes, close the "Wine Versions Manager" window
+1. Wait for the download to complete
+1. Highlight 1.9.19-staging - we need this one to install .net dependencies
+1. Click on the arrow in the middle that points to the right
+1. This will bring up a dialog box - click "Next"
+1. Wait for the download to complete
+1. close the "Wine Versions Manager" window
 
 ### Create a new virtual drive in Playonlinux
 
@@ -91,26 +128,12 @@ Move the downloaded file to `~/halo_pc_on_linux/assets`
 1. Click the "New" button at the bottom left
 1. This will bring up a dialog box - click "Next"
 1. Ensure "32 bits windows installation" is highlighted, then click "Next"
-1. Find the latest version of wine 3.x (such as `3.5`) from the list (which is probably all the way at the bottom), click it, then click "Next"
+1. Find the 1.9.19-staging version of wine, click it, then click "Next"
 1. Type a name for this virtual drive - I used "halo_pc", then click "Next"
 1. The virtual drive will now go through the setup steps.  You may be prompted a few times to take an action.  Anytime you are prompted, choose the affirmative option.  Here are a few examples:
     * "Wine Mono Installer" - click "Install"
     * "Wine Gecko Installer" - click "Install"
     * If none of those show up, that's fine, too
-
-### Configure the virtual drive
-
-1. Ensure you have Playonlinux open, and you are on the "Configuration" window that lists all of your virtual drives
-1. Find your "halo_pc" virtual drive from the list on the left, then click it
-1. Click the "Wine" tab
-1. Click "Configure Wine"
-1. This will open a "Wine configuration" window that looks like a Windows configuration window
-    1. From the "Applications" tab, ensure the "Windows Version" is set to "Windows 7"
-    1. From the "Libraries" tab:
-        1. Type "dinput8" into the "New override for library" dropdown
-        1. Click the "Add" button
-    1. Click OK
-
 
 ### Prepare the Virtual Drive
 
@@ -123,68 +146,42 @@ Move the downloaded file to `~/halo_pc_on_linux/assets`
 1. From this shell/terminal:
     1. `cd ~/halo_pc_on_linux`
     1. `./installer.sh`
-1. Choose the first option to install dependencies by typing "1" then pressing enter.
-    1. You will be prompted to type "yes" then hit enter
+1. Choose the first option to install .net dependencies by typing "1" then pressing enter
     1. Some installation windows will open then quickly disappear - this is normal
-    1. You will again be prompted to type "yes" then hit enter
-1. Exit by typing "6" then pressing enter.
-1. Ensure you have Playonlinux open, and you have selected the "halo_pc" virtual drive from the "Configuration" window
-1. Click the "Wine" tab
-1. Click "Configure Wine"
-1. This will open a "Wine configuration" window that looks like a Windows configuration window
-    1. From the "Graphics" tab:
-        1. Check "Automatically capture the mouse in full-screen windows"
-        1. Uncheck "Allow the window manager to decorate windows"
-        1. Uncheck "Allow the window manager to control the windows"
-        1. Check "Emulate a virtual desktop"
-        1. Set the "Desktop size" to 1920 x 1080 (or another resolution if you prefer)
-    1. Click OK
+1. Exit by typing the number that corresponds to the exit option, then press enter
+1. Type `exit` in the playonlinux shell
+1. From the "playonlinux configuration" window, ensure you have selected the "halo_pc" virtual drive from the "Configuration" window
+1. Click the "General" tab
+1. Click on the "Wine version" dropdown, and choose `3.5`
+1. Click the "Miscellaneous" tab
+1. Click "Open a shell" again - this will open a shell using the new wine 3.5 version
+1. From this shell/terminal:
+    1. `cd ~/halo_pc_on_linux`
+    1. `./installer.sh`
+1. Choose the second option to install the rest of the dependencies by typing "2" then pressing enter
 
 
-## Install Halo!
+## Scripts
+
+### `./installer.sh`
+
+Once you have followed the above steps, you will have downloaded all of the necessary files, created the virtual drive, and installed the necessary dependencies.  Now it's time to install Halo!  There are a few choices, but you will likely at least want to install Halo CE.  Once you have installed what you want, you can open the Halo manager script.
+
+All of the installation options are listed below.  Note that you will need to run `./installer.sh` and `./manager.sh` from a playonlinux shell for your virtual drive.  Here are the steps to get one of those shells open:
 
 1. Ensure you have Playonlinux open, and you have selected the "halo_pc" virtual drive from the "Configuration" window
 1. Click the "Miscellaneous" tab
 1. Click "Open a shell" - This will open a terminal that is configured to use the wine version that is being managed in your "halo_pc" virtual drive
 1. From this shell/terminal:
     1. `cd ~/halo_pc_on_linux`
-    1. `./installer.sh`
-1. Choose which installations you would like to perform.  See the descriptions of each option below.
-1. Exit.
+    1. `./installer.sh` or, if you've already installed everything, `./manager.sh`
 
 
-### Install Dependencies
+### `./manager.sh`
 
-Before you can install any version of Halo, you will need to install the system dependencies.  Run this option first if you haven't already.
+After you've installed the Halo versions you want, you will have more than one Halo CE-based game.  The `./manager` script allows you to switch between the different installations while keeping the profiles, settings, and saved games separate.
 
-
-### Install Halo CE
-
-You probably want to install this.  To use anything else below, except for a standalone Halo PC, you will need to have Halo CE installed.
-
-After installing Halo CE, go back to the terminal and press enter.  This will start the installation of OpenSauce.
-
-
-### Install Halo PC
-
-If you have an ISO of the original Halo PC game, you can install Halo PC.  Note that it hasn't aged perfectly, so if you are looking to play the original game, I recommend you install Halo CE, Halo PC, and Halo CE Single Player.
-
-When you have finished installing Halo PC, go back to the terminal and press enter, which will initiate the installation of the patch.
-
-
-### Install Halo CE Single Player
-
-After you've installed both Halo CE and Halo PC, you can install the single player campaign for Halo CE.  This will convert the Halo PC maps to work in Halo CE and install Ryno UI so you can access the campaign from Halo CE.
-
-
-### Install SPV3
-
-After you've installed Halo CE, you can install SPV3.
-
-
-### Exit
-
-Choose this last option when you're done.  This will exit the installer.
+@todo - document the manager options
 
 
 ## Shortcuts
@@ -198,10 +195,16 @@ Now that you've installed the games you want to play, it's time to create the sh
 1. Find your "halo_pc" virtual drive from the list on the left, then click it
 1. Click the "General" tab
 1. Click the "Make a new shortcut from this virtual drive" button
-1. Scroll down to find and select either "haloce.exe" (Halo CE) or "halo.exe" (Halo PC) or both (do not use the .lnk files)
+1. Scroll down to find and select "haloce.exe" (do not use the .lnk file)
 1. Click "Next"
-1. Name the shortcut, then click "Next"
-1. When you're done making shortcuts, choose "I don't want to make another shortcut"
+1. Give the shortcut a name, such as "Halo CE", then click "Next"
+1. Scroll down to find and select "SPV3.EXE"
+1. Click "Next"
+1. Give the shortcut a name, such as "SPV3", then click "Next"
+1. Scroll down to find and select "halo.exe"
+1. Click "Next"
+1. Give the shortcut a name, such as "Halo PC", then click "Next"
+1. Choose "I don't want to make another shortcut"
 1. Click "Next"
 
 
@@ -212,10 +215,38 @@ stable way to play the game.
 
 1. Ensure you have Playonlinux open, and you are on the "Configuration" window that lists all of your virtual drives
 1. Find your "halo_pc" virtual drive from the list on the left, then click it
-1. Find the shortcut you made for Halo PC or Halo CE, then click it
+1. Find the shortcut you made for Halo CE, then click it
 1. In the "Arguments" text box, put the following after anything that might already be in there.  Note that it starts with a space:
     1. `-vidmode 1920,1080,60 -console`
-1. Repeat this for any additional Halo shortcuts
+1. Repeat this for the Halo PC shortcut
+
+
+### Configure SPV3
+
+SPV3 has more rigid requirements for working properly, due to its custom launcher.  Because of this, we cannot set the vidmode and other settings, like we do with the Halo CE and Halo PC shortcuts.
+
+1. Ensure you have installed SPV3
+1. Ensure you have created a shortcut for SPV3
+1. Ensure you have enabled SPV3 from the manager
+1. Launch Halo CE from the shortcut
+1. Create a profile by clicking on "Settings", typing a name, and clicking "OK" to save it
+1. Quit Halo CE
+1. Launch SPV3 from the shortcut
+1. Click on the red text at the bottom that will allow you to enter a profile name
+1. Enter your profile name
+1. Click "Step 03: Save Profile"
+1. The launcher will close
+1. Launch SPV3 from the shortcut
+1. This time, you'll see the real menu
+1. Open `~/My Games/Halo CE/Halo_Settings.User.xml` in a text editor
+1. Under `<Video>`, you'll see <Enabled>false</Enabled>` - change that `false` to `true`
+1. Under `<Developer>`, you'll see <Enabled>false</Enabled>` - change that `false` to `true` if you want access to the console
+1. Save and close the file
+1. Open `~/My Games/Halo CE/Chimera_Settings.User.xml` in a text editor
+1. Under `<Cinematic>`, you'll see <Enabled>false</Enabled>` - change that `false` to `true`
+1. Save and close the file
+1. Go back to the SPV3 launcher that you still have open
+1. Click "Launch SPV3"
 
 
 ## References
@@ -240,11 +271,14 @@ stable way to play the game.
 * [https://www.reddit.com/r/halospv3/comments/545mhs/spv302_released_download_for_all_users_inside/](https://www.reddit.com/r/halospv3/comments/545mhs/spv302_released_download_for_all_users_inside/)
 * [https://www.youtube.com/watch?v=J0ANLxDdf_U](https://www.youtube.com/watch?v=J0ANLxDdf_U)
 * [http://forum.halomaps.org/index.cfm?page=topic&topicID=50277](http://forum.halomaps.org/index.cfm?page=topic&topicID=50277)
+* [https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586](https://appdb.winehq.org/objectManager.php?sClass=application&iId=2586)
+* [https://askubuntu.com/questions/370737/p11-kit-typical-problem-with-wine](https://askubuntu.com/questions/370737/p11-kit-typical-problem-with-wine)
+* [https://www.playonlinux.com/en/topic-10534-Regarding_ptrace_scope_fatal_error.html](https://www.playonlinux.com/en/topic-10534-Regarding_ptrace_scope_fatal_error.html)
+
 
 ## @TODO
 
-* modify Halo_Settings.User.xml
-* modify Chimera_Settings.User.xml
-* use recurring prompts after the different installations finish
+* learn how to configure chimera
+* make the screen size configurable
 * add the maw fixed(?)
 * Use bash infinity?

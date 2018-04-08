@@ -43,3 +43,27 @@ function error_check () {
 
   print_success "$successMessage"
 }
+
+# Is the command available to be executed?
+#
+# @param $1 command
+#   The command
+function dependencyExists () {
+  if [[ $(which "$1" | wc -l) = 1 ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# Does the file exist?
+#
+# @param $1 pathToFile
+#   The path to the file to check the existence of
+function fileExists () {
+  if [[ -f "$1" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}

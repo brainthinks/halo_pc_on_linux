@@ -4,9 +4,6 @@ assets/
 # This is the configuration file you need to create
 config.sh
 
-# Winetricks may be created here, so we don't want to track it
-winetricks
-
 # Dependencies that are loaded at runtime
-python_combustion/
+dependencies/
 

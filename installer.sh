@@ -1,67 +1,14 @@
 #!/usr/bin/env bash
 
 # @todos:
-# implement combustion!
-# don't require the user to type "Yes" to override registry settings
 # untar the iso rather than mounting it
 # create log files to track individual installers if they requireUserToContinue
 # download as many of the files as possible
-# configure wine? desktop, cmst, etc
 # create shortcuts
 
 ###
 ### Helpers
 ###
-
-# Is the command available to be executed?
-#
-# @param $1 command
-#   The command
-function dependencyExists () {
-  if [[ $(which "$1" | wc -l) = 1 ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
-
-# Does the file exist?
-#
-# @param $1 pathToFile
-#   The path to the file to check the existence of
-function fileExists () {
-  if [[ -f "$1" ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
-
-# Ensure winetricks is installed.  If a locally installed version is found, it
-# will be used.  If a locally installed version is not found, the latest version
-# of winetricks will be downloaded from github and used.
-function detectWinetricks () {
-  # dependencyExists winetricks
-  # if [[ "$?" = "0" ]]; then
-  #   WINETRICKS=winetricks
-  #   print_success "found installed winetricks"
-  #   return 0
-  # fi
-
-  fileExists "./winetricks"
-  if [[ "$?" = "0" ]]; then
-    print_success "found local winetricks..."
-    WINETRICKS=./winetricks
-    return 0
-  fi
-
-  print_info "could not find winetricks - downloading latest..."
-  wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
-  chmod +x winetricks
-  WINETRICKS=./winetricks
-  print_success "winetricks downloaded..."
-  return 0
-}
 
 function cleanStart () {
   # Confirm this script was run in a playonlinux terminal
@@ -79,8 +26,26 @@ function cleanStart () {
   mkdir -p "$TMP_DIR"
   error_check "Deleted temp directory" "Failed to delete temp directory"
 
-  # Delete downloaded dependencies
-  rm -rf "python_combustion"
+  # Reset downloaded dependencies
+  rm -rf "dependencies"
+  mkdir -p "dependencies"
+}
+
+function confirmWineVersion () {
+  if [[ "$WINEVERSION" = "$DOTNET_WINE_VERSION" ]]; then
+    print_failure "$WINEVERSION is only to be used to install .net dependencies.  Switch to a 3.x version."
+    exit 1
+  fi
+}
+
+function getWinetricks () {
+  print_info "Downloading latest version of winetricks..."
+  cd "dependencies"
+  wget "https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks"
+  error_check "Downloaded winetricks" "Failed to download winetricks"
+
+  chmod +x winetricks
+  cd "$PROJECT_DIR"
 }
 
 
@@ -92,7 +57,15 @@ function cleanStart () {
 # installers.
 #
 # @todo - can we detect whether or not these have already been installed?
-function installDependencies () {
+function installDependenciesDotNet () {
+  if [[ "$WINEVERSION" != "$DOTNET_WINE_VERSION" ]]; then
+    print_failure "$DOTNET_WINE_VERSION must be used to install .net dependencies.  You appear to be running $WINEVERSION.  Switch to $DOTNET_WINE_VERSION."
+    exit 1
+  fi
+
+  getWinetricks
+  WINETRICKS="$PROJECT_DIR/dependencies/winetricks"
+
   # A prerequisite for dotnet35
   print_info "Installing msxml3..."
   $WINETRICKS -q msxml3
@@ -100,14 +73,52 @@ function installDependencies () {
 
   # MSXML3 MUST be installed successfully prior to installing dotnet35
   # OpenSauce requires this dotnet version
-  print_info "Installing dotnet35..."
-  $WINETRICKS -q dotnet35
-  error_check "Installed dotnet35" "Failed to install dotnet35"
+  print_info "Installing dotnet35sp1..."
+  $WINETRICKS -q dotnet35sp1
+  # This finishes with an error code...
+  print_success "Installed dotnet35sp1"
 
   # OpenSauce requires this dotnet version, even when 4.5.1 is installed
   print_info "Installing dotnet40..."
   $WINETRICKS -q dotnet40
   error_check "Installed dotnet40" "Failed to install dotnet40"
+
+  # SPV3 claims to require dotnet 4.5.1
+  # Note that we cannot install this with winetricks because it will fail, since
+  # winetricks will complain that this is incompatible with the already-installed
+  # dotnet35sp1, and will not allow you to install it
+  print_info "Installing dotnet4.5.1..."
+  $WINETRICKS win7
+  wine "$DOTNET_451_PATH" /q /norestart
+  print_success "Installed dotnet4.5.1"
+
+  # Needed for keygen
+  print_info "Installing vb6run..."
+  $WINETRICKS vb6run
+  error_check "Installed vb6run" "Failed to install vb6run"
+
+  echo -e "${BLUE}"
+  echo ""
+  echo "-------------------------------------------------------------------------"
+  echo "---                                                                   ---"
+  echo "---  Now that the .net dependencies have been installed, you need to  ---"
+  echo "---  go back into play on linux and set this virtual drive's wine     ---"
+  echo "---  version to $DOTNET_WINE_VERSION"
+  echo "---                                                                   ---"
+  echo "---                                                                   ---"
+  echo "---  press enter to exit...                                           ---"
+  echo "---                                                                   ---"
+  echo "-------------------------------------------------------------------------"
+  echo ""
+  echo -e "${NC}"
+  read -p ""
+}
+
+function installDependencies () {
+  confirmWineVersion
+
+  getWinetricks
+  WINETRICKS="$PROJECT_DIR/dependencies/winetricks"
 
   # This must be installed, or the Halo installer will display the following error:
   # "Cannot load Pidgen.dll"
@@ -115,49 +126,36 @@ function installDependencies () {
   $WINETRICKS -q mfc42
   error_check "Installed mfc42" "Failed to install mfc42"
 
-  # Not sure if this is required
+  # It appears as though SPV3 wants d3dx9_43, but I'm not sure.
   print_info "Installing d3dx9..."
   $WINETRICKS -q d3dx9_43
   error_check "Installed d3dx9" "Failed to install d3dx9"
 
-  # SPV3 claims to require dotnet 4.5.1
-  # Try this instead...
-  print_info "Installing dotnet4.5.2..."
-  $WINETRICKS -q dotnet452
-  error_check "Installed dotnet4.5.2" "Failed to install dotnet4.5.2"
-
-  # SPV3 claims to require dotnet 4.5.1
-  # print_info "Installing dotnet4.5.1..."
-  # $WINETRICKS win7
-  # wine "$DOTNET_451_PATH" /q /norestart
-  # error_check "Installed dotnet4.5.1" "Failed to install dotnet4.5.1"
-
-  # Needed for keygen
-  print_info "Installing vb6run..."
-  $WINETRICKS vb6run
-  error_check "Installed vb6run" "Failed to install vb6run"
-
   print_info "Configuring Virtual Drive..."
   regedit halo_drive_configuration.reg
   error_check "Configured virtual drive" "Failed to configure virtual drive"
+
+  print_info "Setting Windows version to 7..."
+  $WINETRICKS win7
+  print_success "Set Windows version to 7"
 }
 
 # Install Halo CE, the patch, and opensauce
 #
 # @todo - perform fileExists checks for necessary files
 function installHaloCustomEdition () {
+  confirmWineVersion
+
   # Thankfully, this returns properly, so we do not need to have the user
   # indicate that they have finished the installer.
   print_info "Installing Halo CE"
   wine "$HALO_CE_PATH"
-  error_check "Installed Halo CE" "Failed to install Halo CE"
+  # We can't do a prpper error check here because Halo CE exits with an error code...
+  print_success "Installed Halo CE"
 
-  # This patch does not exit properly, therefore we rely on the user to come
-  # back here to press enter to continue the script.
   print_info "Installing Halo CE Patch 1.10"
   wine "$HALO_CE_PATCH_PATH"
-  print_info " --- Don't forget to hit enter when you're finished!  If the installation failed or you want to cancel, hit ctrl+c --- "
-  read -p ""
+  wineserver -w
   print_info "Installed Halo CE Patch 1.10"
 
   # OpenSauce properly exits as well.
@@ -177,6 +175,8 @@ function installHaloCustomEdition () {
 }
 
 function installSPV3 () {
+  confirmWineVersion
+
   print_info "Creating SPV3 maps folder"
   cp -R "$PATH_TO_CE_MAPS_BACKUP" "$PATH_TO_CE_MAPS_SPV3"
   error_check "Created SPV3 maps folder" "Failed to create SPV3 maps folder"
@@ -247,6 +247,8 @@ function installSPV3 () {
 }
 
 function installRynoUI () {
+  confirmWineVersion
+
   local destination="$1"
 
   print_info "Extracting Ryno UI"
@@ -264,6 +266,8 @@ function installRynoUI () {
 }
 
 function installMosRefinedCampaign () {
+  confirmWineVersion
+
   print_info "Creating Mo's Refined Campaign maps folder"
   cp -R "$PATH_TO_CE_MAPS_BACKUP" "$PATH_TO_CE_MAPS_MRC"
   error_check "Created Mo's Refined Campaign maps folder" "Failed to create Mo's Refined Campaign maps folder"
@@ -315,6 +319,11 @@ function installMosRefinedCampaign () {
 #
 # @todo - perform fileExists checks for necessary files
 function installHaloPC () {
+  confirmWineVersion
+
+  echo "We need sudo to be able to mount the ISO..."
+  sudo echo "Acquired Root Permissions..."
+
   print_info "Mounting Halo PC ISO"
   mkdir -p "$HALO_ISO_MOUNT_DIR"
   sudo umount "$HALO_ISO_MOUNT_DIR"
@@ -325,8 +334,7 @@ function installHaloPC () {
   # come back here to press enter to continue the script.
   print_info "Installing Halo PC"
   wine "$HALO_ISO_MOUNT_DIR/Setup.Exe"
-  print_info " --- Don't forget to hit enter when you're finished!  If the installation failed or you want to cancel, hit ctrl+c --- "
-  read -p ""
+  wineserver -w
   print_info "Installed Halo PC"
 
   print_info "Unmounting Halo PC ISO"
@@ -339,12 +347,13 @@ function installHaloPC () {
   # back here to press enter to continue the script.
   print_info "Installing Halo PC Patch 1.10"
   wine "$HALO_PC_PATCH_PATH"
-  print_info " --- Don't forget to hit enter when you're finished!  If the installation failed or you want to cancel, hit ctrl+c --- "
-  read -p ""
+  wineserver -w
   print_info "Installed Halo PC Patch 1.10"
 }
 
 function installHaloCEHaloPCCampaign () {
+  confirmWineVersion
+
   print_info "Creating Halo PC Campaign for Halo CE maps folder"
   # We need to start out with the maps in the "maps" folder so python_combustion
   # will convert them properly...
@@ -352,6 +361,7 @@ function installHaloCEHaloPCCampaign () {
   error_check "Created Halo PC Campaign for Halo CE maps folder" "Failed to create Halo PC Campaign for Halo CE maps folder"
 
   print_info "Cloning Python Combustion, which will convert the Halo PC maps to work in Halo CE"
+  cd "dependencies"
   git clone "https://github.com/brainthinks/python_combustion.git"
   error_check "Cloned Python Combustion" "Failed to clone Python Combustion"
 
@@ -384,128 +394,6 @@ function installHaloCEHaloPCCampaign () {
   error_check "Installed Ryno UI" "Failed to install Ryno UI"
 }
 
-
-###
-### UI / UX
-###
-
-function _installDependencies () {
-  echo -e "${ORANGE}"
-  echo "-------------------------------------------------------------------------"
-  echo "---                                                                   ---"
-  echo "---  While I have tried my best to ensure that you have to do as      ---"
-  echo "---  little work as possible, there are still times where your        ---"
-  echo "---  participation will be required.  Here are the parts where you    ---"
-  echo "---  will need to interact with the script:                           ---"
-  echo "---                                                                   ---"
-  echo "---  * you will need to type your sudo password                       ---"
-  echo "---  * dotnet35 will require you to type 'Yes'                        ---"
-  echo "---  * dotnet35 will require you to type 'Yes' again                  ---"
-  echo "---                                                                   ---"
-  echo "---  Now that you know what you have to do...                         ---"
-  echo "---                                                                   ---"
-  echo "---  Press Enter to start the installation!                           ---"
-  echo "---                                                                   ---"
-  echo "-------------------------------------------------------------------------"
-  echo -e "${NC}"
-  read -p ""
-  echo ""
-
-  installDependencies
-
-  echo -e "${ORANGE}"
-  echo "-------------------------------------------------------------------------"
-  echo "---                                                                   ---"
-  echo "---  Halo Dependency Installation in Playonlinux Complete!!!          ---"
-  echo "---                                                                   ---"
-  echo "-------------------------------------------------------------------------"
-  echo -e "${NC}"
-}
-
-function _installHaloCustomEdition () {
-  echo -e "${ORANGE}"
-  echo ""
-  echo "-------------------------------------------------------------------------"
-  echo "---                                                                   ---"
-  echo "---  Halo Custom Edition Installation                                 ---"
-  echo "---                                                                   ---"
-  echo "---  This will install Halo CE, the Halo CE 1.0.10 Patch, and         ---"
-  echo "---  OpenSauce.                                                       ---"
-  echo "---                                                                   ---"
-  echo "---  YOUR ACTION IS REQUIRED!!!                                       ---"
-  echo "---                                                                   ---"
-  echo "---  Once the patch finishes installing, you will need to come back   ---"
-  echo "---  to this terminal and press ENTER.  If you do not do this, the    ---"
-  echo "---  installation process will just be sitting here waiting forever   ---"
-  echo "---  and you will think it is frozen.                                 ---"
-  echo "---                                                                   ---"
-  echo "---  If you understand your responsibility, press ENTER...            ---"
-  echo "---                                                                   ---"
-  echo "-------------------------------------------------------------------------"
-  echo ""
-  echo -e "${NC}"
-  read -p ""
-
-  installHaloCustomEdition
-
-  echo -e "${ORANGE}"
-  echo ""
-  echo "-------------------------------------------------------------------------"
-  echo "---                                                                   ---"
-  echo "---  Halo CE Installation in Playonlinux Complete!!!                  ---"
-  echo "---                                                                   ---"
-  echo "---  Press ENTER to return to the main menu.                          ---"
-  echo "---                                                                   ---"
-  echo "-------------------------------------------------------------------------"
-  echo ""
-  echo -e "${NC}"
-  read -p ""
-}
-
-function _installHaloPC () {
-  echo -e "${ORANGE}"
-  echo ""
-  echo "-------------------------------------------------------------------------"
-  echo "---                                                                   ---"
-  echo "---  Halo PC Installation                                             ---"
-  echo "---                                                                   ---"
-  echo "---  This will install Halo PC, and the Halo PC 1.0.10 Patch.         ---"
-  echo "---                                                                   ---"
-  echo "---  YOUR ACTION IS REQUIRED!!!                                       ---"
-  echo "---                                                                   ---"
-  echo "---  Once you are finished installing Halo, you will need to come     ---"
-  echo "---  back to this terminal and press ENTER.  If you do not do this,   ---"
-  echo "---  the installation process will just be sitting here waiting       ---"
-  echo "---  forever and you will think it is frozen.                         ---"
-  echo "---                                                                   ---"
-  echo "---  You will also have to do this after installing the patch.        ---"
-  echo "---                                                                   ---"
-  echo "---  If you understand your responsibility, press ENTER...            ---"
-  echo "---                                                                   ---"
-  echo "-------------------------------------------------------------------------"
-  echo ""
-  echo -e "${NC}"
-  read -p ""
-
-  echo "We need sudo to be able to mount the ISO..."
-  sudo echo "Acquired Root Permissions..."
-
-  installHaloPC
-
-  echo -e "${ORANGE}"
-  echo ""
-  echo "-------------------------------------------------------------------------"
-  echo "---                                                                   ---"
-  echo "---  Halo PC Installation in Playonlinux Complete!!!                  ---"
-  echo "---                                                                   ---"
-  echo "---  Press ENTER to return to the main menu.                          ---"
-  echo "---                                                                   ---"
-  echo "-------------------------------------------------------------------------"
-  echo ""
-  echo -e "${NC}"
-  read -p ""
-}
-
 function mainMenu () {
   cleanStart
 
@@ -515,7 +403,7 @@ function mainMenu () {
   echo "---                                                                   ---"
   echo "---  Halo PC in Playonlinux Installer                                 ---"
   echo "---                                                                   ---"
-  echo "---        Wine Version: $(wine --version)"
+  echo "---        Wine Version: $WINEVERSION"
   echo "---  Virtual Drive Name: $PREFIXNAME"
   echo "---                                                                   ---"
   echo "---  Type in the number that appears in front of the option you want, ---"
@@ -526,13 +414,14 @@ function mainMenu () {
   echo -e "${NC}"
 
   local options=(\
-    "Step 1 - Install Dependencies" \
-    "Step 2 - Install Halo CE" \
-    "Step 3 - Install SPV3" \
-    "Step 4 - Install Halo CE Mo's Refined Campaign" \
-    "Step 5 - Install Halo PC" \
-    "Step 6 - Install Halo CE Campaign from Halo PC" \
-    "Step 7 - Open Halo CE Campaign Manager" \
+    "Step 1 - Install .net Dependencies using $DOTNET_WINE_VERSION" \
+    "Step 2 - Install Dependencies" \
+    "Step 3 - Install Halo CE" \
+    "Step 4 - Install SPV3" \
+    "Step 5 - Install Halo CE Mo's Refined Campaign" \
+    "Step 6 - Install Halo PC" \
+    "Step 7 - Install Halo CE Campaign from Halo PC" \
+    "Step 8 - Open Halo CE Campaign Manager" \
     "Exit" \
   )
 
@@ -540,32 +429,37 @@ function mainMenu () {
 
   do
     case $option in
-      "Step 1 - Install Dependencies")
-        _installDependencies
+      "Step 1 - Install .net Dependencies using $DOTNET_WINE_VERSION")
+        installDependenciesDotNet
         mainMenu
         ;;
-      "Step 2 - Install Halo CE")
-        _installHaloCustomEdition
+      "Step 2 - Install Dependencies")
+        installDependencies
         mainMenu
         ;;
-      "Step 3 - Install SPV3")
+      "Step 3 - Install Halo CE")
+        installHaloCustomEdition
+        mainMenu
+        ;;
+      "Step 4 - Install SPV3")
         installSPV3
         mainMenu
         ;;
-      "Step 4 - Install Halo CE Mo's Refined Campaign")
+      "Step 5 - Install Halo CE Mo's Refined Campaign")
         installMosRefinedCampaign
         mainMenu
         ;;
-      "Step 5 - Install Halo PC")
-        _installHaloPC
+      "Step 6 - Install Halo PC")
+        installHaloPC
         mainMenu
         ;;
-      "Step 6 - Install Halo CE Campaign from Halo PC")
+      "Step 7 - Install Halo CE Campaign from Halo PC")
         installHaloCEHaloPCCampaign
         mainMenu
         ;;
-      "Step 7 - Open Halo CE Campaign Manager")
+      "Step 8 - Open Halo CE Campaign Manager")
         ./manager.sh
+        mainMenu
         ;;
 
       "Exit")
@@ -589,8 +483,7 @@ function mainMenu () {
 source "./utils.sh"
 source "./config.sh"
 
-# Winetricks may already exist, so find it or download it
-detectWinetricks
+WINEVERSION=$(wine --version)
 
 # Display the main menu
 mainMenu $@
